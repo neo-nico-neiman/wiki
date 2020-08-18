@@ -1,16 +1,16 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    New Entry
+    Edit Entry
 {% endblock %}
 
 {% block body %}
     <h1>{{ header }}</h1>
+    <h3>{{ title }}</h3>
     <h6 style="color:red">{{ error_message }}</h6>
     <form action="{% url 'wiki:edit_entry'%}" method="POST">
         {% csrf_token %}
-        {{ edit_entry_form.title }}
-        {{ edit_entry_form.content }}
+        {{ editForm }}
         <input type="submit" placeholder="Save">
     </form>
 

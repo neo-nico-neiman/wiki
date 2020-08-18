@@ -5,10 +5,6 @@
 {% endblock %}
 
 {% block body %}
-<form action="{% url 'wiki:edit_entry' %}" method="POST">
-    {% csrf_token%}
-    <input hidden value={{title}} type="text">
-    <input type="submit" title="Edit content">
-</form>
+<a href="/edit_entry/{{title}}">Edit content"</a>
     {{ entry | default:"There is no data for this entry"}}
 {% endblock %}
