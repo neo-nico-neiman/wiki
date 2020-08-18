@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block body %}
-    <h1>{{ header }}</h1>
-    <h3>{{ title }}</h3>
+    <h3>{{ header }}</h3>
+    <h6>{{ title }}</h6>
     <h6 style="color:red">{{ error_message }}</h6>
-    <form action="{% url 'wiki:edit_entry'%}" method="POST">
+    <form  action="{% url 'wiki:edit_entry' title %}" method="POST">
         {% csrf_token %}
         {{ editForm }}
         <input type="submit" placeholder="Save">

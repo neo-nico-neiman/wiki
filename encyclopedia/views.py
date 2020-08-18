@@ -2,16 +2,17 @@ from django.shortcuts import render
 from django import forms
 from django.http import HttpResponseRedirect
 from . import util
-
+from random import choice
 class newSearchForm(forms.Form):#innherits from forms.Form
-    search = forms.CharField( widget= forms.TextInput(attrs={'placeholder':'Search Encyclopedia'}))
+    search = forms.CharField( widget= forms.TextInput(attrs={'placeholder':'Search Encyclopedia'}), label='')
 
 class newEntryForm(forms.Form):
-    title = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Entry Title',}))
-    content = forms.CharField(widget= forms.Textarea(attrs={'placeholder':'Content', 'cols': '40', 'rows': '5'}))
+    title = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Entry Title',}), label='')
+    content = forms.CharField(widget= forms.Textarea(attrs={'placeholder':'Content', 'cols': '40', 'rows': '5'}), label='')
 
 class editEntryForm(forms.Form):
-    content = forms.CharField(widget= forms.Textarea(attrs={'placeholder':'Content', 'cols': '40', 'rows': '5', 'readonly': 'True'}))
+    title = forms.CharField(widget= forms.TextInput(attrs={'hidden': 'True'}), label='')
+    content = forms.CharField(widget= forms.Textarea(attrs={'cols': '40', 'rows': '5'}), label='')
 
 def index(request):
     return render(request, 'encyclopedia/index.html', {
@@ -100,36 +101,39 @@ def new_entry(request):
         })
 
 def edit_entry(request, title):
-    # content = util.get_entry(title)
-    editForm = editEntryForm( util.get_entry(title) )
+    if request.method == 'POST':
+        form = editEntryForm( request.POST )
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+
+            try:
+                util.save_entry(title, content)
+                return render(request, 'encyclopedia/entry.html', {
+                    'title': title,
+                    'entry': util.get_entry( title ),
+                    'form': newSearchForm()
+                })
+            except Exception as e:
+                return render(request, 'encyclopedia/new_entry.html', {
+            'header': 'New Entry',
+            'form': newSearchForm(),
+            'new_entry_form': form,
+            'error_message': e
+            })
     return render(request, 'encyclopedia/edit_entry.html', {
         'header': 'Edit Entry',
         'title': title,
-        'editForm': editForm,
+        'editForm': editEntryForm( 
+            initial = { 'title': title, 'content': util.get_entry( title ) } ,
+            auto_id = 'False' ),
         'form': newSearchForm()
     })
-    # if request.method == 'POST':
-    #     form = newEntryForm( request.POST )
-    #     if form.is_valid():
-    #         title = form.cleaned_data['title']
-    #         content = form.cleaned_data['content']
-    #         try:
-    #             util.save_entry(title, content)
-    #             return render(request, 'encyclopedia/entry.html', {
-    #                 'title': title,
-    #                 'entry': util.get_entry( title ),
-    #                 'form': newSearchForm()
-    #             })
-    #         except Exception as e:
-    #             return render(request, 'encyclopedia/new_entry.html', {
-    #         'header': 'New Entry',
-    #         'form': newSearchForm(),
-    #         'new_entry_form': form,
-    #         'error_message': e
-    #         })
-    # else:
-    #     return render(request, 'encyclopedia/new_entry.html', {
-    #         'header': 'New Entry',
-    #         'form': newSearchForm(),
-    #         'new_entry_form': newEntryForm()
-    #     })
+
+def random(request):
+    entry = choice(util.list_entries())
+    return render(request, 'encyclopedia/entry.html', {
+        'title': entry,
+        'entry': util.get_entry( entry ),
+        'form': newSearchForm()
+    })
