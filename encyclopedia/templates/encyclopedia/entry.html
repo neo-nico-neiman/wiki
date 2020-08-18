@@ -1,0 +1,14 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{title}}
+{% endblock %}
+
+{% block body %}
+<form action="{% url 'wiki:edit_entry' %}" method="POST">
+    {% csrf_token%}
+    <input hidden value={{title}} type="text">
+    <input type="submit" title="Edit content">
+</form>
+    {{ entry | default:"There is no data for this entry"}}
+{% endblock %}
