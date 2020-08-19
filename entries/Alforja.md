@@ -1,5 +1,5 @@
 # Alforja 
 This is Alforja
 
-- [x] True
-- [ ] False
+- [X] True
+- [] False

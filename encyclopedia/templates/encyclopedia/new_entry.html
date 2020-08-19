@@ -10,7 +10,9 @@
     <form action="{% url 'wiki:new_entry'%}" method="POST">
         {% csrf_token %}
         {{ new_entry_form }}
+    <div class="form_footer">
+        <a href="https://docs.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax" class="small">Learn more about Markdown formatting</a>
         <input type="submit">
+    </div>
     </form>
-
 {% endblock %}

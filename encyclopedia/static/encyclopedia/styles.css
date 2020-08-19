@@ -13,7 +13,7 @@ h1 {
 }
 
 textarea {
-    height: 90vh;
+    height: 75vh;
     width: 80%;
 }
 
@@ -35,4 +35,20 @@ textarea {
 
 .sidebar h2 {
     margin-top: 5px;
+}
+
+a {
+    text-decoration: none;
+    color:rgb(61, 60, 60);
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.form_footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 80%;
 }

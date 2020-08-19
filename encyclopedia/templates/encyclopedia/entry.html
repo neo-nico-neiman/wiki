@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block body %}
-<a href="{% url 'wiki:edit_entry' title %}">Edit content</a>
-    {{ entry | default:"There is no data for this entry"}}
+<a href="{% url 'wiki:edit_entry' title %}" class="small">Edit content</a>
+<div class="w-75">
+    {{ entry | safe | default:"There is no data for this entry" }}
+</div>
 {% endblock %}

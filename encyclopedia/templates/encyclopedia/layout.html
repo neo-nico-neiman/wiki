@@ -15,7 +15,7 @@
                 <form action="{% url 'wiki:search'%}" method="POST" class="search">
                     {% csrf_token %}
                     {{ form }}
-                    <input type="submit" style="margin-top: 10px;">
+                    <input type="submit" style="margin-top: 10px;" value="Search">
                 </form>
                 <div>
                     <a href="{% url 'wiki:index' %}">Home</a>
