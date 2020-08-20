@@ -7,8 +7,9 @@ from markdown2 import Markdown
 class newSearchForm(forms.Form):#innherits from forms.Form
     search = forms.CharField(
         widget= forms.TextInput(attrs={
-            'placeholder':'Search Encyclopedia',
-            'class': 'w-100 text-center'
+            'placeholder':'Search',
+            'class': 'd-inline',
+            'style': 'width: 70%'
         }),
         label=''
     )
