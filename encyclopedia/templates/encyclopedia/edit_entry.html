@@ -11,7 +11,10 @@
     <form  action="{% url 'wiki:edit_entry' title %}" method="POST">
         {% csrf_token %}
         {{ editForm }}
-        <input type="submit" placeholder="Save">
+        <div class="form_footer">
+            <a href="https://docs.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax" class="small">Learn more about Markdown formatting</a>
+            <input type="submit" placeholder="Save">
+        </div>
     </form>
 
 {% endblock %}

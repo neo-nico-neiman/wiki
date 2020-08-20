@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django import forms
-from django.http import HttpResponseRedirect
 from . import util
 from random import choice
 from markdown2 import Markdown
 
 class newSearchForm(forms.Form):#innherits from forms.Form
-    search = forms.CharField( widget= forms.TextInput(attrs={'placeholder':'Search Encyclopedia'}), label='')
+    search = forms.CharField(
+        widget= forms.TextInput(attrs={'placeholder':'Search Encyclopedia'}),
+        label=''
+    )
 
 class newEntryForm(forms.Form):
     title = forms.CharField(
@@ -23,13 +25,18 @@ class newEntryForm(forms.Form):
     )
 
 class editEntryForm(forms.Form):
-    title = forms.CharField(widget = forms.TextInput(attrs={'hidden': 'True'}), label='')
-    content = forms.CharField(widget = forms.Textarea(attrs={'cols': '40', 'rows': '5'}), label='')
+    title = forms.CharField(
+        widget = forms.TextInput(attrs={'hidden': 'True'}),
+        label=''
+    )
+    content = forms.CharField(
+        widget = forms.Textarea(attrs={'cols': '40', 'rows': '5'}),
+        label=''
+    )
 
 def markdowner(title):
-    markdowner = Markdown()
-    entry = util.get_entry(title)
-    return markdowner.convert(entry)
+    #This method converts MD into HTML
+    return Markdown().convert(util.get_entry(title))
 
 def index(request):
     return render(request, 'encyclopedia/index.html', {
@@ -46,12 +53,11 @@ def wiki(request, title):
     })
 
 def search(request):
-    list_of_entries = util.list_entries()
     form = newSearchForm(request.POST)
-    entries_substring = []
     if form.is_valid():
             search = form.cleaned_data['search']
-            for entry in list_of_entries:
+            entries_substring = []
+            for entry in util.list_entries():
                 if search.lower() in entry.lower():
                     if search.lower() != entry.lower():
                         entries_substring.append(entry)
@@ -62,33 +68,26 @@ def search(request):
                         'entry': util.get_entry(title),
                         'form': newSearchForm()
                         })
-            if len( entries_substring ):
+            if len(entries_substring):
                 return render(request, 'encyclopedia/index.html', {
                 'entries': entries_substring,
                 'header': 'Matching Results',
                 'form': newSearchForm()
                 })
-            else:
-                return render(request, 'encyclopedia/index.html', {
-                'entries': util.list_entries(),
-                'header': 'All Pages',
-                'form': newSearchForm()
-                })   
-    else:
-        return render(request, 'encyclopedia/index.html', {
-        'entries': util.list_entries(),
-        'header': 'All Pages',
-        'form': newSearchForm()
-        })
+    #if there are no matching results for the search, then return All Pages List
+    return render(request, 'encyclopedia/index.html', {
+    'entries': util.list_entries(),
+    'header': 'All Pages',
+    'form': newSearchForm()
+    })
 
 def new_entry(request):
     if request.method == 'POST':
         form = newEntryForm(request.POST)
-        entries_list = util.list_entries()
         if form.is_valid():
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-            for entry in entries_list:
+            for entry in util.list_entries():
                 if title.lower() == entry.lower():
                     return render(request, 'encyclopedia/new_entry.html', {
                     'header': 'New Entry',
@@ -104,6 +103,7 @@ def new_entry(request):
                     'form': newSearchForm()
                 })
             except Exception as e:
+            #If an error is encountered, return the form with its content and display an error message
                 return render(request, 'encyclopedia/new_entry.html', {
             'header': 'New Entry',
             'form': newSearchForm(),
@@ -122,7 +122,6 @@ def edit_entry(request, title):
         if form.is_valid():
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-
             try:
                 util.save_entry(title, content)
                 return render(request, 'encyclopedia/entry.html', {
@@ -142,7 +141,8 @@ def edit_entry(request, title):
         'title': title,
         'editForm': editEntryForm( 
             initial = {'title': title, 'content': util.get_entry( title )},
-            auto_id = 'False'),
+            auto_id = 'False'
+        ),
         'form': newSearchForm()
     })
 
