@@ -6,7 +6,10 @@ from markdown2 import Markdown
 
 class newSearchForm(forms.Form):#innherits from forms.Form
     search = forms.CharField(
-        widget= forms.TextInput(attrs={'placeholder':'Search Encyclopedia'}),
+        widget= forms.TextInput(attrs={
+            'placeholder':'Search Encyclopedia',
+            'class': 'w-100 text-center'
+        }),
         label=''
     )
 
@@ -20,7 +23,8 @@ class newEntryForm(forms.Form):
             'placeholder':'Use Markdown formatting to style this entry\'s content.',
             'cols': '40',
             'rows': '5',
-            'class': 'my-2'}),
+            'class': 'my-2'
+        }),
         label=''
     )
 
@@ -46,26 +50,30 @@ def index(request):
     })
 
 def wiki(request, title):
+    if util.get_entry(title):
+        return render(request, 'encyclopedia/entry.html', {
+            'title': title,
+            'entry': markdowner(title),
+            'form': newSearchForm()
+        })
     return render(request, 'encyclopedia/entry.html', {
-        'title': title,
-        'entry': markdowner(title),
-        'form': newSearchForm()
-    })
+            'title': title,
+            'form': newSearchForm()
+        })
 
 def search(request):
     form = newSearchForm(request.POST)
     if form.is_valid():
-            search = form.cleaned_data['search']
+            title = form.cleaned_data['search']
             entries_substring = []
             for entry in util.list_entries():
-                if search.lower() in entry.lower():
-                    if search.lower() != entry.lower():
+                if title.lower() in entry.lower():
+                    if title.lower() != entry.lower():
                         entries_substring.append(entry)
                     else:
-                        title = search
                         return render(request, 'encyclopedia/entry.html', {
                         'title': title,
-                        'entry': util.get_entry(title),
+                        'entry': markdowner(title),
                         'form': newSearchForm()
                         })
             if len(entries_substring):

@@ -15,6 +15,11 @@ h1 {
 textarea {
     height: 75vh;
     width: 80%;
+    padding: 4px 8px;
+}
+
+input {
+    padding: 4px 8px;
 }
 
 .main {

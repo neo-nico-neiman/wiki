@@ -7,6 +7,6 @@
 {% block body %}
 <a href="{% url 'wiki:edit_entry' title %}" class="small">Edit content</a>
 <div class="w-75">
-    {{ entry | safe | default:"There is no data for this entry" }}
+    {{ entry | safe | default:"Upsss...We haven't found any matching entry with this name" }}
 </div>
 {% endblock %}

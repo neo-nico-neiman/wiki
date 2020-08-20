@@ -6,7 +6,7 @@
 
 {% block body %}
     <h3>{{ header }}</h3>
-    <h6 style="color:red">{{ error_message }}</h6>
+    <h6 class="small text-danger">{{ error_message }}</h6>
     <form action="{% url 'wiki:new_entry' %}" method="POST">
         {% csrf_token %}
         {{ new_entry_form }}
